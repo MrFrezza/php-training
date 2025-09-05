@@ -27,7 +27,7 @@ final class PageSeoController extends AbstractController
     {
         $form = $this->createForm(PageSeoType::class, $pageSeo);
         $form->handleRequest($request);
-∂
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
