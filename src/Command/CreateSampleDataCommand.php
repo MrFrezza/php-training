@@ -4,8 +4,10 @@ namespace App\Command;
 
 use App\Entity\Enum\LanguageEnum;
 use App\Entity\GeneralData;
+use App\Entity\GlobalTags;
 use App\Entity\PageSeo;
 use App\Repository\GeneralDataRepository;
+use App\Repository\GlobalTagsRepository;
 use App\Repository\PageSeoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,7 +24,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateSampleDataCommand extends Command
 {
-    public function __construct(private GeneralDataRepository $generalDataRepository, private PageSeoRepository $seoRepository, private EntityManagerInterface $em, private readonly PageSeoRepository $pageSeoRepository)
+    public function __construct(
+        private GeneralDataRepository $generalDataRepository,
+        private PageSeoRepository $seoRepository,
+        private GlobalTagsRepository $globalTagsRepository,
+        private EntityManagerInterface $em,
+        private readonly PageSeoRepository $pageSeoRepository)
     {
         parent::__construct();
     }
@@ -41,7 +48,7 @@ class CreateSampleDataCommand extends Command
             $pageSeo = $this->pageSeoRepository->findBy(['language' => $option]);
             if ($pageSeo)
             {
-                $io->writeln('Page Seo em '.$index.' <comment>existe</comment>');
+                $io->writeln('Page Seo em '.$index.' <comment> já existe</comment>');
             } else
             {
                 $io->writeln('Page Seo em '.$index.' <info>criada</info>');
@@ -68,21 +75,33 @@ class CreateSampleDataCommand extends Command
         }
 
         $generalData = $this->generalDataRepository->find(1);
-
-        if ($generalData)
-        {
-            $io->writeln('General data '.$index.' <comment>existe</comment>');
-        }
-        else
-        {
-            $io->writeln('General data '.$index.' <comment>existe</comment>');
-
+        if ($generalData) {
+            $io->writeln('General data <comment> já existe</comment>');
+        } else {
+            $io->writeln('General data <comment>criada</comment>');
             $generalData = new GeneralData();
             $generalData->setEmail("email@dominio.com.br");
             $generalData->setAddress("Rua X, 123");
             $generalData->setPhone("(11) 2243-9067");
 
             $this->em->persist($generalData);
+            $this->em->flush();
+        }
+
+        $globalTags = $this->globalTagsRepository->findAll();
+        if ($globalTags)
+        {
+            $io->writeln('Global Tags <comment> já existe</comment>');
+        }
+        else
+        {
+            $io->writeln('Global Tags <comment>criada</comment>');
+            $globalTags = new GlobalTags();
+            $globalTags->setGa4('GA4');
+            $globalTags->setPixelMetaAds('Meta pixel');
+            $globalTags->setTagsGoogleAds('Google Ads');
+
+            $this->em->persist($globalTags);
             $this->em->flush();
         }
 
