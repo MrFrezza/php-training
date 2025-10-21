@@ -2,10 +2,12 @@
 
 namespace App\Command;
 
+use App\Entity\ContactFormUrlPost;
 use App\Entity\Enum\LanguageEnum;
 use App\Entity\GeneralData;
 use App\Entity\GlobalTags;
 use App\Entity\PageSeo;
+use App\Repository\ContactFormUrlPostRepository;
 use App\Repository\GeneralDataRepository;
 use App\Repository\GlobalTagsRepository;
 use App\Repository\PageSeoRepository;
@@ -28,6 +30,7 @@ class CreateSampleDataCommand extends Command
         private GeneralDataRepository $generalDataRepository,
         private PageSeoRepository $seoRepository,
         private GlobalTagsRepository $globalTagsRepository,
+        private ContactFormUrlPostRepository $contactFormUrlPostRepository,
         private EntityManagerInterface $em,
         private readonly PageSeoRepository $pageSeoRepository)
     {
@@ -102,6 +105,21 @@ class CreateSampleDataCommand extends Command
             $globalTags->setTagsGoogleAds('Google Ads');
 
             $this->em->persist($globalTags);
+            $this->em->flush();
+        }
+
+        $contactForm = $this->contactFormUrlPostRepository->findAll();
+        if ($contactForm)
+        {
+            $io->writeln('URL de postagem <comment> já existe</comment>');
+        }
+        else
+        {
+            $io->writeln('URL de postagem <comment>criado</comment>');
+            $contactForm = new ContactFormUrlPost();
+            $contactForm->setUrl('https://teste.com.br');
+
+            $this->em->persist($contactForm);
             $this->em->flush();
         }
 
