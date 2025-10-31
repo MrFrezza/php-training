@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class BannerType extends AbstractType
 {
@@ -23,7 +24,12 @@ class BannerType extends AbstractType
             ])
             ->add('position')
             ->add('url')
-            ->add('image')
+            ->add('imageFile', VichFileType::class, [
+                'required' => false,
+                'allow_delete' => false,
+                'asset_helper' => false,
+                'download_uri' => false,
+            ])
         ;
     }
 
