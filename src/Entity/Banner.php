@@ -40,6 +40,9 @@ class Banner
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $imgUpdateAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $language = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +141,18 @@ class Banner
     public function setImgUpdateAt(?\DateTimeImmutable $imgUpdateAt): void
     {
         $this->imgUpdateAt = $imgUpdateAt;
+    }
+
+    public function getLanguage(): ?int
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(?int $language): static
+    {
+        $this->language = $language;
+
+        return $this;
     }
 
 }
